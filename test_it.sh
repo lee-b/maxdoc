@@ -1,3 +1,3 @@
 #!/bin/sh
 cd examples
-PYTHONPATH=.. ../env/bin/python ../bin/maxdoc
+PYTHONPATH=.. ../env/bin/python ../bin/maxdoc --output-format=html index.mdoc
