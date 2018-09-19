@@ -2,7 +2,7 @@ from .config import get_config
 from .db import init_db
 from .gatherers import ALL_GATHERERS
 from .renderers import ALL_RENDERERS
-from .ast import load_doc
+from .ast import load_doc, transform_ast
 
 
 def gather_data(config, db_session):
@@ -26,6 +26,8 @@ def main(args):
         print("")
 
     ast = load_doc(config.input_doc)
+
+    transform_ast(config, db_session, ast, None)
 
     renderer = ALL_RENDERERS[config.renderer]
     renderer.render(config, db_session, ast)

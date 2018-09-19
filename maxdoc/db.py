@@ -21,7 +21,7 @@ class Book(Base):
 
 
 def init_db():
-    db_engine = create_engine('sqlite:///:memory:', echo=True)
+    db_engine = create_engine('sqlite:///:memory:')
 
     Base.metadata.create_all(db_engine)
 
