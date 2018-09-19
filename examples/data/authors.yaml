@@ -1,0 +1,10 @@
+[
+        {
+                id: rms@gnu.org,
+                pen_name: "Richard M. Stallman",
+        },
+        {
+                id: leebraid@gmail.com,
+                pen_name: "Lee Braiden",
+        }
+]
