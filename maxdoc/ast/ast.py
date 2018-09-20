@@ -15,11 +15,12 @@ class Node(metaclass=abc.ABCMeta):
 
 
 class TextNode(Node):
-    def __init__(self, *, body=None, **kwargs):
+    def __init__(self, *, body=None, transformation=None, **kwargs):
         super().__init__(**kwargs)
         if body is None:
             body = ''
         self.body = body
+        self.transformation = transformation
 
 
 class BookNode(Node):

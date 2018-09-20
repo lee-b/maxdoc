@@ -1,7 +1,7 @@
 import abc
 import os
 
-from .ast import Node
+from .ast import Node, TextNode
 
 
 class ASTTransform(metaclass=abc.ABCMeta):
@@ -41,8 +41,11 @@ class ASTTransform(metaclass=abc.ABCMeta):
 
 
 class ASTEnvVar(ASTTransform):
-    def _execute(self, config, db_session, ast_node, parent=None):
-        parent._replace_child(ast_node, TextNode(os.environ[ast_node.body]))
+    def _execute(self, config, db_session, ast_node, child_handler, parent=None):
+        new_node = TextNode(body=os.environ[ast_node.body])
+        parent._replace_child(ast_node, new_node)
+        print("replaced {!r} with {!r}".format(ast_node, new_node))
+        return False
 
 
 BUILTIN_AST_TRANSFORM = {
@@ -54,13 +57,12 @@ def transform_ast(config, db_session, ast_node, child_handler, parent=None):
     Args:
         child_handler: Set this to None when calling from user code
     """
-
     class ASTNoOp(ASTTransform):
         pass
 
     no_op = ASTNoOp()
 
-    if hasattr(ast_node, 'transformation'):
+    if hasattr(ast_node, 'transformation') and ast_node.transformation is not None:
         handler = BUILTIN_AST_TRANSFORM[ast_node.transformation]
     else:
         handler = no_op
