@@ -19,7 +19,7 @@ class Renderer(metaclass=abc.ABCMeta):
         except AttributeError:
             return None
 
-        return db_type.get(id=ast_node.id)
+        return db_session.query(db_type).filter_by(id=ast_node.id).one()
 
     def render(self, config, db_session, ast_node):
         self._pre_render(config, db_session, ast_node)

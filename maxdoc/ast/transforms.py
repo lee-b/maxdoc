@@ -44,7 +44,6 @@ class ASTEnvVar(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
         new_node = TextNode(body=os.environ[ast_node.body])
         parent._replace_child(ast_node, new_node)
-        print("replaced {!r} with {!r}".format(ast_node, new_node))
         return False
 
 

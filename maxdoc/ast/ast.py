@@ -24,9 +24,9 @@ class TextNode(Node):
 
 
 class BookNode(Node):
-    def __init__(self, *, id=None):
+    def __init__(self, *, id=None, **kwargs):
         super().__init__(**kwargs)
-        self._id = id
+        self.id = id
 
 
 ALL_AST_NODE_TYPES = { 'Text': TextNode, 'Book': BookNode }
@@ -42,7 +42,7 @@ def load_yaml(yaml_node):
     if isinstance(yaml_node, dict) and 'node_type' in yaml_node:
         node_type_name = yaml_node['node_type']
         node_type = ALL_AST_NODE_TYPES[node_type_name]
-        loaded_items = { k: load_yaml(v) for k, v in yaml_node.items() }
+        loaded_items = { k: load_yaml(v) for k, v in yaml_node.items() if k != 'node_type' }
         return node_type(**loaded_items)
 
     elif isinstance(yaml_node, list):
