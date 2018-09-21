@@ -16,46 +16,51 @@ class ASTTransform(metaclass=abc.ABCMeta):
         returns: (bool) whether to rescan the (sub)tree if parent is not None, else None
         """
 
-        rescan = None
+        while True:
+            rescan, ast_node = self._pre_execute(config, db_session, ast_node, child_handler, parent=parent)
+            if rescan:
+                return rescan, ast_node
 
-        while rescan in (None, True):
-            rescan = self._pre_execute(config, db_session, ast_node, child_handler, parent=parent)
-            rescan |= self._execute(config, db_session, ast_node, child_handler, parent=parent)
+            rescan, ast_node = self._execute(config, db_session, ast_node, child_handler, parent=parent)
+            if rescan:
+                return rescan, ast_node
 
             if hasattr(ast_node, '_children') and ast_node._children:
                 children_copy = list(ast_node._children)
                 for child_node in children_copy:
-                    rescan |= child_handler(config, db_session, child_node, child_handler, parent=ast_node)
+                    rescan, child_node = child_handler(config, db_session, child_node, child_handler, parent=ast_node)
+                    if rescan:
+                        return rescan, ast_node
 
-            rescan |= self._post_execute(config, db_session, ast_node, child_handler, parent=parent)
+            rescan, ast_node = self._post_execute(config, db_session, ast_node, child_handler, parent=parent)
+            if not rescan:
+                break 
 
-            if parent is not None:
-                return rescan
-
-        return rescan
+        return rescan, ast_node
 
     def _pre_execute(self, config, db_session, ast_node, child_handler, parent=None):
-        return False
+        return False, ast_node
 
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
-        return False
+        return False, ast_node
 
     def _post_execute(self, config, db_session, ast_node, child_handler, parent=None):
-        return False
+        return False, ast_node
 
 
 class EnvVarASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
         new_node = Node(node_type='Text', body=os.environ[ast_node.body])
         parent._replace_child(ast_node, new_node)
-        return False
+        return False, new_node
 
 
 class ASTIncludeASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
+        import pudb; pudb.set_trace()
         new_node = load_ast_yaml(ast_node.path)
         parent._replace_child(ast_node, new_node)
-        return False  # TODO: change to true, make sure rescanning included files and modifying parent ASTs works correctly
+        return True, new_node
 
 
 BUILTIN_AST_TRANSFORMS = {
@@ -74,17 +79,20 @@ def transform_ast(config, db_session, ast_node, child_handler, parent=None):
 
     no_op = ASTNoOp()
 
-    if hasattr(ast_node, '_transformation') and ast_node._transformation is not None:
-        try:
-            handler = BUILTIN_AST_TRANSFORMS[ast_node._transformation]
-        except KeyError as e:
-            raise ASTError("Unknown AST transformation: {}".format(str(e))) from e
-
-    else:
-        handler = no_op
-
     rescan = None
-    while rescan in (None, True):
-        rescan = handler.execute(config, db_session, ast_node, transform_ast, parent=parent)
+    while True:
+        if hasattr(ast_node, '_transformation') and ast_node._transformation is not None:
+            try:
+                handler = BUILTIN_AST_TRANSFORMS[ast_node._transformation]
+            except KeyError as e:
+                raise ASTError("Unknown AST transformation: {}".format(str(e))) from e
 
-    return rescan if parent is not None else None
+        else:
+            handler = no_op
+
+        rescan, ast_node = handler.execute(config, db_session, ast_node, transform_ast, parent=parent)
+
+        if not rescan:
+            break
+
+    return rescan if parent is not None else None, ast_node
