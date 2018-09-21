@@ -36,10 +36,22 @@ class HTMLRenderer(Renderer):
             super()._render_body(config, db_session, ast_node)
 
         elif isinstance(db_node, db.Book):
+            if db_node.url is not None:
+                config.out_fp.write("<a href='{}'>".format(db_node.url))
+
             config.out_fp.write("{}".format(db_node.title))
 
+            if db_node.url is not None:
+                config.out_fp.write("</a>")
+
         elif isinstance(db_node, db.Author):
+            if db_node.url is not None:
+                config.out_fp.write("<a href='{}'>".format(db_node.url))
+
             config.out_fp.write("<a href='{}'>{}</a>".format('mailto:' + db_node.id, db_node.pen_name))
+
+            if db_node.url is not None:
+                config.out_fp.write("</a>")
 
         elif hasattr(ast_node, 'node_type') and ast_node.node_type == 'Text':
             config.out_fp.write(ast_node.body)

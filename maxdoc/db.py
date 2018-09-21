@@ -11,6 +11,7 @@ class Author(Base):
     __tablename__ = 'authors'
     id = Column(String, primary_key=True)
     pen_name = Column(String)
+    url = Column(String, nullable=True)
 
 
 class Book(Base):
@@ -18,6 +19,7 @@ class Book(Base):
     id = Column(String, primary_key=True)  # isbn
     title = Column(String)
     date = Column(Date, nullable=True)
+    url = Column(String, nullable=True)
 
 
 def init_db():

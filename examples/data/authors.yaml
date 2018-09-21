@@ -2,6 +2,7 @@
         {
                 id: rms@gnu.org,
                 pen_name: "Richard M. Stallman",
+                url: "https://stallman.org/",
         },
         {
                 id: leebraid@gmail.com,
