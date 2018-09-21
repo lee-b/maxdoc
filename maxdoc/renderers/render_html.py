@@ -16,6 +16,14 @@ class HTMLRenderer(Renderer):
                                          + "    <body>\n"))
             elif ast_node.node_type == 'Para':
                     config.out_fp.write("        <p>")
+            elif ast_node.node_type == 'Strong':
+                    config.out_fp.write("<strong>")
+            elif ast_node.node_type == 'Emph':
+                    config.out_fp.write("<em>")
+            elif ast_node.node_type == 'Sub':
+                    config.out_fp.write("<sub>")
+            elif ast_node.node_type == 'Sup':
+                    config.out_fp.write("<sup>")
         else:
             super()._pre_render(config, db_session, ast_node)
 
@@ -26,6 +34,14 @@ class HTMLRenderer(Renderer):
                                      "</html>"))
             elif ast_node.node_type == 'Para':
                 config.out_fp.write("</p>\n")
+            elif ast_node.node_type == 'Strong':
+                    config.out_fp.write("</strong>")
+            elif ast_node.node_type == 'Emph':
+                    config.out_fp.write("</em>")
+            elif ast_node.node_type == 'Sub':
+                    config.out_fp.write("</sub>")
+            elif ast_node.node_type == 'Sup':
+                    config.out_fp.write("</sup>")
         else:
             super()._post_render(config, db_session, ast_node)
 

@@ -26,7 +26,39 @@
             _children: [
                 {
                     node_type: Text,
-                    body: "You should read "
+                    body: "You ",
+                },
+                {
+                    node_type: Sup,
+                    _children: [
+                        {
+                            node_type: Sup,
+                            _children: [
+                                {
+                                    node_type: Text,
+                                    body: " really ",
+                                },
+                                {
+                                    node_type: Sup,
+                                    _children: [
+                                        {
+                                            node_type: Strong,
+                                            _children: [
+                                                {
+                                                    node_type: Text,
+                                                    body: "should",
+                                                },
+                                            ],
+                                        },
+                                    ],
+                               },
+                            ],
+                        },
+                    ],
+                },
+               {
+                    node_type: Text,
+                    body: " read ",
                 },
                 {
                     node_type: Book,
