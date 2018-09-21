@@ -1,7 +1,7 @@
 import abc
 import os
 
-from .ast import Node, TextNode
+from .ast import Node
 
 
 class ASTTransform(metaclass=abc.ABCMeta):
@@ -42,7 +42,7 @@ class ASTTransform(metaclass=abc.ABCMeta):
 
 class ASTEnvVar(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
-        new_node = TextNode(body=os.environ[ast_node.body])
+        new_node = Node(node_type='Text', body=os.environ[ast_node.body])
         parent._replace_child(ast_node, new_node)
         return False
 

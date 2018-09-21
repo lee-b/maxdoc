@@ -12,7 +12,10 @@ class HTMLRenderer(Renderer):
         if isinstance(db_node, db.Book):
             config.out_fp.write("{}".format(db_node.title))
 
-        elif isinstance(ast_node, ast.TextNode):
+        elif isinstance(db_node, db.Author):
+            config.out_fp.write("<a href='{}'>{}</a>".format('mailto:' + db_node.id, db_node.pen_name))
+
+        elif ast_node.node_type == 'Text':
             config.out_fp.write(ast_node.body)
 
         else:
