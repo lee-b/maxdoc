@@ -27,7 +27,7 @@ def main(args):
 
     ast = load_ast_yaml(config.input_doc)
 
-    transform_ast(config, db_session, ast, None)
+    _, ast = transform_ast(config, db_session, ast, None)
 
     if config.dump_transformed_ast:
         ast_repr = dump_nodes(ast)

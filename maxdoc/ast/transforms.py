@@ -1,7 +1,7 @@
 import abc
 import os
 
-from .ast import Node, load_ast_yaml
+from .ast import Node, load_ast_yaml, ASTWalker, ASTVisitor
 
 
 class ASTError(Exception):
@@ -33,10 +33,10 @@ class ASTTransform(metaclass=abc.ABCMeta):
                         return rescan, ast_node
 
             rescan, ast_node = self._post_execute(config, db_session, ast_node, child_handler, parent=parent)
-            if not rescan:
-                break 
+            if (parent is not None and rescan) or not rescan:
+                break
 
-        return rescan, ast_node
+        return False, ast_node
 
     def _pre_execute(self, config, db_session, ast_node, child_handler, parent=None):
         return False, ast_node
@@ -57,14 +57,38 @@ class EnvVarASTTransform(ASTTransform):
 
 class ASTIncludeASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
-        new_node = load_ast_yaml(ast_node.path)
+        new_node = load_ast_yaml(ast_node.path, top_level=False)
         parent._replace_child(ast_node, new_node)
         return True, new_node
 
 
+class ASTHeadingLevelVisitor(ASTVisitor):
+    def pre_visit(self, ast_node, parents, context):
+        if hasattr(ast_node, 'node_type') and ast_node.node_type == 'Head':
+            if 'heading_level' not in context:
+               context['heading_level'] = 1
+            else:
+               context['heading_level'] += 1
+
+            ast_node._heading_level = context['heading_level']
+
+    def post_visit(self, ast_node, parents, context):
+        if hasattr(ast_node, 'node_type') and ast_node.node_type == 'Head':
+            assert 'heading_level' in context
+            context['heading_level'] -= 1
+
+
+class ComputeHeadingLevels(ASTTransform):
+    def _execute(self, config, db_session, ast_node, child_handler, parent=None):
+        walker = ASTWalker()
+        visitor = ASTHeadingLevelVisitor()
+        walker.walk(visitor, ast_node, dump_ast_walk=config.dump_ast_walk)
+        return False, ast_node
+
 BUILTIN_AST_TRANSFORMS = {
     'env_var': EnvVarASTTransform(),
     'include_ast': ASTIncludeASTTransform(),
+    'compute_heading_levels': ComputeHeadingLevels(),
 }
 
 
@@ -90,8 +114,7 @@ def transform_ast(config, db_session, ast_node, child_handler, parent=None):
             handler = no_op
 
         rescan, ast_node = handler.execute(config, db_session, ast_node, transform_ast, parent=parent)
-
-        if not rescan:
+        if (parent is not None and rescan) or not rescan:
             break
 
-    return rescan if parent is not None else None, ast_node
+    return rescan, ast_node

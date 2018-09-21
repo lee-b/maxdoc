@@ -52,7 +52,7 @@ class Renderer(metaclass=abc.ABCMeta):
         else:
             children = []
 
-        for ast_child_node in ast_node._children:
+        for ast_child_node in children:
             self.render(config, db_session, ast_child_node)
 
         self._post_render(config, db_session, ast_node)

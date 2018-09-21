@@ -27,6 +27,10 @@
 
             _children: [
                 {
+                    _transformation: include_ast,
+                    path: subtopic.mdoc,
+                },
+                {
                     node_type: Para,
                     _children: [
                         {
@@ -82,8 +86,8 @@
                             body: "."
                         },
                     ],
-                },
-                {
+               },
+               {
                     node_type: Para,
                     _children: [
                         {
@@ -93,6 +97,10 @@
                     ],
                 },
             ],
+        },
+        {
+            node_type: Head,
+            title: "A second top-level heading.",
         },
         {
             node_type: Para,
