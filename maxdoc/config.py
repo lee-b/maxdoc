@@ -4,7 +4,6 @@ import logging
 
 def get_config(argv):
     argparser = argparse.ArgumentParser()
-    argparser.add_argument('--output-format')
     argparser.add_argument('--renderer', default='html')
     argparser.add_argument('input_doc')
     argparser.add_argument('output_doc')

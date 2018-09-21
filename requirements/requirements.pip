@@ -1,3 +1,4 @@
 sqlalchemy
 yaml
 pyyaml
+jinja2

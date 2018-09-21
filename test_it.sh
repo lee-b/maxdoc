@@ -1,10 +1,10 @@
 #!/bin/bash
 
 cd examples
-PYTHONPATH=.. ../env/bin/python ../bin/maxdoc --output-format=html index.mdoc out.html
+PYTHONPATH=.. ../env/bin/python ../bin/maxdoc --renderer=html_jinja2 index.mdoc out.html && cat out.html
 
-if [ "$DISPLAY" != "" ]; then
-    xdg-open out.html
-else
-    cat out.html
+if which xdg-open; then
+    if [ "$DISPLAY" != "" ]; then
+        xdg-open &> /dev/null out.html
+    fi
 fi
