@@ -34,7 +34,7 @@ class ASTVisitor(metaclass=abc.ABCMeta):
 class ASTWalker:
     def walk(self, ast_visitor, ast_node, parents=None, context=None, indent=1, dump_ast_walk=False):
         if dump_ast_walk:
-            print(" " * 4 * indent + "Visiting:", ast_node if not isinstance(ast_node, Node) else ast_node.__dict__)
+            print(" " * 4 * indent + "Visiting: {!r} (parents={!r})".format(ast_node if not isinstance(ast_node, Node) else ast_node.__dict__, parents))
 
         if parents is None:
             parents = []
@@ -68,7 +68,10 @@ def load_ast_yaml(fpath, top_level=True):
 
     if top_level:
         # decorate document with transformation functions
-        ast = Node(_children=[ast], _transformation='compute_heading_levels')
+        ast = Node(
+            _transformation='compute_heading_levels',
+            _children=[ast],
+        )
 
     return ast
 

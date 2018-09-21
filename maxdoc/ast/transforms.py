@@ -62,33 +62,96 @@ class ASTIncludeASTTransform(ASTTransform):
         return True, new_node
 
 
-class ASTHeadingLevelVisitor(ASTVisitor):
+class ASTHeadingLevelAdjuster(ASTVisitor):
     def pre_visit(self, ast_node, parents, context):
-        if hasattr(ast_node, 'node_type') and ast_node.node_type == 'Head':
-            if 'heading_level' not in context:
-               context['heading_level'] = 1
-            else:
-               context['heading_level'] += 1
+        if 'heading_level' not in context:
+            context['heading_level'] = 0
 
+        if hasattr(ast_node, 'node_type') and ast_node.node_type == 'Head':
+            context['heading_level'] += 1
             ast_node._heading_level = context['heading_level']
 
     def post_visit(self, ast_node, parents, context):
         if hasattr(ast_node, 'node_type') and ast_node.node_type == 'Head':
-            assert 'heading_level' in context
             context['heading_level'] -= 1
 
 
-class ComputeHeadingLevels(ASTTransform):
+class ASTHeadingLevelPruner(ASTVisitor):
+    def __init__(self, max_level=None):
+        assert max_level is not None
+        self._max_level = max_level
+        self._pruning = False
+        self._relative_depth = [0]
+
+    def pre_visit(self, ast_node, parents, context):
+        if 'current_depth' not in context:
+            context['current_depth'] = 0
+
+        context['current_depth'] += 1
+
+        if 'current_level' not in context:
+            context['current_level'] = 0
+
+        if hasattr(ast_node, '_heading_level'):
+            context['current_level'] = ast_node._heading_level
+
+        if hasattr(ast_node, '_transformation') and ast_node._transformation == 'prune_heading_levels':
+            self._relative_depth.append(context['current_depth'])
+
+        if not self._pruning and context['current_level'] > self._max_level + self._relative_depth[-1]:
+            self._pruning = True
+
+    def post_visit(self, ast_node, parents, context):
+        context['current_depth'] -= 1
+
+        if hasattr(ast_node, '_heading_level'):
+            context['current_level'] = ast_node._heading_level
+
+        if self._pruning:
+            if context['current_level'] <= self._max_level + self._relative_depth[-1]:
+               self._pruning = False
+
+            else:
+               if not parents:
+                   #raise ASTError("INTERNAL ERROR: no parents for {!r} when pruning!".format(ast_node)) # TODO
+                   return
+
+               parent = parents[-1]
+
+               if isinstance(parent, Node):
+                   parent._children.remove(ast_node)
+
+               elif isinstance(parent, dict):
+                   parent['_children'].remove(ast_node)
+
+               elif isinstance(parent, list):
+                   list.remove(ast_node)
+
+        if hasattr(ast_node, '_transformation') and ast_node._transformation == 'prune_heading_levels':
+            self._relative_depth.pop()
+
+
+class ComputeHeadingLevelsASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
         walker = ASTWalker()
-        visitor = ASTHeadingLevelVisitor()
+        visitor = ASTHeadingLevelAdjuster()
         walker.walk(visitor, ast_node, dump_ast_walk=config.dump_ast_walk)
         return False, ast_node
+
+
+class PruneHeadingLevelsASTTransform(ASTTransform):
+    def _execute(self, config, db_session, ast_node, child_handler, parent=None):
+        walker = ASTWalker()
+        visitor = ASTHeadingLevelPruner(max_level=ast_node.max_level)
+        walker.walk(visitor, ast_node, dump_ast_walk=config.dump_ast_walk)
+        return False, ast_node
+
 
 BUILTIN_AST_TRANSFORMS = {
     'env_var': EnvVarASTTransform(),
     'include_ast': ASTIncludeASTTransform(),
-    'compute_heading_levels': ComputeHeadingLevels(),
+    'compute_heading_levels': ComputeHeadingLevelsASTTransform(),
+    'prune_heading_levels': PruneHeadingLevelsASTTransform(),
 }
 
 
