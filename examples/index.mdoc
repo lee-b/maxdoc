@@ -22,68 +22,75 @@
             ],
         },
         {
-            node_type: Para,
+            node_type: Head,
+            title: "Now, to the crux of the matter",
+
             _children: [
                 {
-                    node_type: Text,
-                    body: "You ",
-                },
-                {
-                    node_type: Sup,
+                    node_type: Para,
                     _children: [
+                        {
+                            node_type: Text,
+                            body: "You ",
+                        },
                         {
                             node_type: Sup,
                             _children: [
                                 {
-                                    node_type: Text,
-                                    body: " really ",
-                                },
-                                {
                                     node_type: Sup,
                                     _children: [
                                         {
-                                            node_type: Strong,
+                                            node_type: Text,
+                                            body: " really ",
+                                        },
+                                        {
+                                            node_type: Sup,
                                             _children: [
                                                 {
-                                                    node_type: Text,
-                                                    body: "should",
+                                                    node_type: Strong,
+                                                    _children: [
+                                                        {
+                                                            node_type: Text,
+                                                            body: "should",
+                                                        },
+                                                    ],
                                                 },
                                             ],
-                                        },
+                                       },
                                     ],
-                               },
+                                },
                             ],
+                        },
+                       {
+                            node_type: Text,
+                            body: " read ",
+                        },
+                        {
+                            node_type: Book,
+                            id: gplv2,
+                        },
+                        {
+                            node_type: Text,
+                            body: " by ",
+                        },
+                        {
+                            node_type: Author,
+                            id: rms@gnu.org,
+                        },
+                        {
+                            node_type: Text,
+                            body: "."
                         },
                     ],
                 },
-               {
-                    node_type: Text,
-                    body: " read ",
-                },
                 {
-                    node_type: Book,
-                    id: gplv2,
-                },
-                {
-                    node_type: Text,
-                    body: " by ",
-                },
-                {
-                    node_type: Author,
-                    id: rms@gnu.org,
-                },
-                {
-                    node_type: Text,
-                    body: "."
-                },
-            ],
-        },
-        {
-            node_type: Para,
-            _children: [
-                {
-                    node_type: Text,
-                    body: "Bye now,",
+                    node_type: Para,
+                    _children: [
+                        {
+                            node_type: Text,
+                            body: "Bye now,",
+                        },
+                    ],
                 },
             ],
         },

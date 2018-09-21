@@ -2,6 +2,22 @@ import argparse
 import logging
 
 
+class Config:
+    def __init__(self, args):
+        for k, v in args.__dict__.items():
+            setattr(self, k, v)
+
+        self.heading_level = 1
+
+    def increment_heading_level(self):
+        self.heading_level += 1
+        return ''
+
+    def decrement_heading_level(self):
+        self.heading_level -= 1
+        return ''
+
+
 def get_config(argv):
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--renderer', default='html')
@@ -14,4 +30,4 @@ def get_config(argv):
     args.in_fp = open(args.input_doc)
     args.out_fp = open(args.output_doc, 'w')
 
-    return args
+    return Config(args)

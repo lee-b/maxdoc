@@ -1,3 +1,4 @@
+import logging
 import os
 
 import jinja2
@@ -21,8 +22,7 @@ class Jinja2HTMLRenderer(Renderer):
         except jinja2.exceptions.TemplateNotFound:
             return None
         except jinja2.exceptions.TemplateSyntaxError as e:
-            logging.error("Template %s_%s: %d: %s", basename, suffix, e.line, str(e))
-            sys.exit(20)
+            raise RenderError("Template {}_{}: {}", basename, suffix, str(e)) from e
 
     def _render_template(self, config, db_session, ast_node, suffix):
         if hasattr(ast_node, 'node_type'):
@@ -39,19 +39,13 @@ class Jinja2HTMLRenderer(Renderer):
             return True
 
     def _pre_render(self, config, db_session, ast_node):
-        if self._render_template(config, db_session, ast_node, "pre"):
-            return
-
-        super()._pre_render(config, db_session, ast_node)
+        if not self._render_template(config, db_session, ast_node, "pre"):
+            super()._pre_render(config, db_session, ast_node)
 
     def _post_render(self, config, db_session, ast_node):
-        if self._render_template(config, db_session, ast_node, "post"):
-            return
-
-        super()._post_render(config, db_session, ast_node)
+        if not self._render_template(config, db_session, ast_node, "post"):
+            super()._post_render(config, db_session, ast_node)
 
     def _render_body(self, config, db_session, ast_node):
-        if self._render_template(config, db_session, ast_node, "body"):
-            return
-
-        super()._render_body(config, db_session, ast_node)
+        if not self._render_template(config, db_session, ast_node, "body"):
+            super()._render_body(config, db_session, ast_node)
