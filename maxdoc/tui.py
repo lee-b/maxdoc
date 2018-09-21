@@ -2,7 +2,7 @@ from .config import get_config
 from .db import init_db
 from .gatherers import ALL_GATHERERS
 from .renderers import ALL_RENDERERS
-from .ast import load_doc, transform_ast
+from .ast import load_ast_yaml, transform_ast, dump_nodes
 
 
 def gather_data(config, db_session):
@@ -25,9 +25,13 @@ def main(args):
         handler(config, db_session)
         print("")
 
-    ast = load_doc(config.input_doc)
+    ast = load_ast_yaml(config.input_doc)
 
     transform_ast(config, db_session, ast, None)
+
+    if config.dump_transformed_ast:
+        ast_repr = dump_nodes(ast)
+        print("Transformed AST:\n" + ast_repr + "\n")
 
     renderer = ALL_RENDERERS[config.renderer]
     renderer.render(config, db_session, ast)

@@ -13,7 +13,7 @@
                 {
                     node_type: Text,
                     body: USER,
-                    transformation: env_var,
+                    _transformation: env_var,
                 },
                 {
                     node_type: Text,
@@ -96,5 +96,9 @@
                 },
             ],
         },
+        {
+            _transformation: include_ast,
+            path: footer.mdoc,
+        }
     ]
 }

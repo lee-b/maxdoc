@@ -1,0 +1,2 @@
+class ASTError(Exception):
+    pass

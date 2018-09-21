@@ -1,7 +1,11 @@
 import abc
 import os
 
-from .ast import Node
+from .ast import Node, load_ast_yaml
+
+
+class ASTError(Exception):
+    pass
 
 
 class ASTTransform(metaclass=abc.ABCMeta):
@@ -40,16 +44,25 @@ class ASTTransform(metaclass=abc.ABCMeta):
         return False
 
 
-class ASTEnvVar(ASTTransform):
+class EnvVarASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
         new_node = Node(node_type='Text', body=os.environ[ast_node.body])
         parent._replace_child(ast_node, new_node)
         return False
 
 
-BUILTIN_AST_TRANSFORM = {
-    'env_var': ASTEnvVar(),
+class ASTIncludeASTTransform(ASTTransform):
+    def _execute(self, config, db_session, ast_node, child_handler, parent=None):
+        new_node = load_ast_yaml(ast_node.path)
+        parent._replace_child(ast_node, new_node)
+        return False  # TODO: change to true, make sure rescanning included files and modifying parent ASTs works correctly
+
+
+BUILTIN_AST_TRANSFORMS = {
+    'env_var': EnvVarASTTransform(),
+    'include_ast': ASTIncludeASTTransform(),
 }
+
 
 def transform_ast(config, db_session, ast_node, child_handler, parent=None):
     """
@@ -61,8 +74,12 @@ def transform_ast(config, db_session, ast_node, child_handler, parent=None):
 
     no_op = ASTNoOp()
 
-    if hasattr(ast_node, 'transformation') and ast_node.transformation is not None:
-        handler = BUILTIN_AST_TRANSFORM[ast_node.transformation]
+    if hasattr(ast_node, '_transformation') and ast_node._transformation is not None:
+        try:
+            handler = BUILTIN_AST_TRANSFORMS[ast_node._transformation]
+        except KeyError as e:
+            raise ASTError("Unknown AST transformation: {}".format(str(e))) from e
+
     else:
         handler = no_op
 
