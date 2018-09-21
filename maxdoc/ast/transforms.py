@@ -18,7 +18,7 @@ class ASTTransform(metaclass=abc.ABCMeta):
             rescan = self._pre_execute(config, db_session, ast_node, child_handler, parent=parent)
             rescan |= self._execute(config, db_session, ast_node, child_handler, parent=parent)
 
-            if isinstance(ast_node, Node) and len(ast_node._children) > 0:
+            if hasattr(ast_node, '_children') and ast_node._children:
                 children_copy = list(ast_node._children)
                 for child_node in children_copy:
                     rescan |= child_handler(config, db_session, child_node, child_handler, parent=ast_node)

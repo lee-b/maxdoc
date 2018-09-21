@@ -7,4 +7,5 @@ from maxdoc import main
 
 
 if __name__ == "__main__":
-	sys.exit(main(sys.argv))
+    rc = main(sys.argv)
+    sys.exit(rc)

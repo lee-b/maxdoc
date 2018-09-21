@@ -31,7 +31,7 @@ def load_yaml(yaml_node):
         return Node(**{ k: load_yaml(v) for k, v in yaml_node.items()})
 
     elif isinstance(yaml_node, list):
-        return Node(_children=[ load_yaml(i) for i in yaml_node ], node_type='List')
+        return [ load_yaml(i) for i in yaml_node ]
 
     else:
         return yaml_node

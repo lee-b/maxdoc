@@ -1,31 +1,41 @@
-[
-    {
-        node_type: Text,
-        body: "Hello, "
-    },
-    {
-        node_type: Text,
-        body: USER,
-        transformation: env_var,
-    },
-    {
-        node_type: Text,
-        body: ". You should read "
-    },
-    {
-        node_type: Book,
-        id: gplv2,
-    },
-    {
-        node_type: Text,
-        body: " by "
-    },
-    {
-        node_type: Author,
-        id: rms@gnu.org,
-    },
-    {
-        node_type: Text,
-        body: "."
-    },
-]
+{
+    node_type: Document,
+    title: "A Warm Greetingmonition",
+
+    _children: [
+        {
+            node_type: Para,
+            _children: [
+                {
+                    node_type: Text,
+                    body: "Hello, "
+                },
+                {
+                    node_type: Text,
+                    body: USER,
+                    transformation: env_var,
+                },
+                {
+                    node_type: Text,
+                    body: ". You should read "
+                },
+                {
+                    node_type: Book,
+                    id: gplv2,
+                },
+                {
+                    node_type: Text,
+                    body: " by "
+                },
+                {
+                    node_type: Author,
+                    id: rms@gnu.org,
+                },
+                {
+                    node_type: Text,
+                    body: "."
+                },
+            ]
+        }
+    ]
+}

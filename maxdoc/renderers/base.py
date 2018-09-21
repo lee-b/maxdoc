@@ -22,13 +22,12 @@ class Renderer(metaclass=abc.ABCMeta):
         pass
 
     def _get_ast_db_node(self, config, db_session, ast_node):
-        if ast_node.node_type in ('list', 'dict'):
+        if type(ast_node) in (list, dict):
             return None
 
         try:
             db_type = getattr(db, ast_node.node_type)
         except AttributeError:
-            logger.warn("No DB Node found for AST Node {}".format(ast_node.node_type))
             return None
 
         try:
@@ -41,9 +40,20 @@ class Renderer(metaclass=abc.ABCMeta):
         self._pre_render(config, db_session, ast_node)
         self._render_body(config, db_session, ast_node)
 
-        if isinstance(ast_node, ast.Node):
-            for ast_child_node in ast_node._children:
-                self.render(config, db_session, ast_child_node)
+        if isinstance(ast_node, list):
+            children = ast_node
+
+        elif isinstance(ast_node, dict):
+            children = ast_node['_children']
+
+        elif hasattr(ast_node, '_children'):
+            children = ast_node._children
+
+        else:
+            children = []
+
+        for ast_child_node in ast_node._children:
+            self.render(config, db_session, ast_child_node)
 
         self._post_render(config, db_session, ast_node)
 
