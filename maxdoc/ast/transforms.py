@@ -57,7 +57,6 @@ class EnvVarASTTransform(ASTTransform):
 
 class ASTIncludeASTTransform(ASTTransform):
     def _execute(self, config, db_session, ast_node, child_handler, parent=None):
-        import pudb; pudb.set_trace()
         new_node = load_ast_yaml(ast_node.path)
         parent._replace_child(ast_node, new_node)
         return True, new_node
