@@ -7,6 +7,11 @@ engine for single-sourcing documents.
 
 The intent is to create a single documentation system that:
 
+* Does not require heavy modifications to restructure (no renumbering
+  points or renumbering headings, for example).
+
+* Does not have arbitrary limits (such as only 7 levels of headings)
+
 * Can include sub-documents (summaries of a topic, for instance) and
   reorganise headers etc. accordingly.
 
