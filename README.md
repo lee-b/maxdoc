@@ -3,6 +3,8 @@
 This is an early, highly pluggable, flexible AST-based typesetting
 engine for single-sourcing documents.
 
+## Overview
+
 The intent is to create a single documentation system that:
 
 * Can include sub-documents (summaries of a topic, for instance) and
@@ -20,8 +22,12 @@ The intent is to create a single documentation system that:
   everything from producing reports and training materials to books,
   audiobooks, and presentations.
 
+Most of the above currently works, for at least one proof-of-concept
+source/format/output. The main feature missing is the input parser -
+currently the only "input" is in the form a intermediate AST yaml dump
+files.
 
-Features:
+## Features
 
 * Powerful AST-based engine, with pluggable AST nodes for adding new
   types of content and new typesetting concepts.
@@ -35,12 +41,26 @@ Features:
 * Pluggable renderers, including a currently implemented template-based
   (jinja2) HTML5 renderer.
 
-These features make MaxDoc an incredibly powerful tool for quickly manipulating 
+These features make MaxDoc an incredibly powerful tool for quickly manipulating
+documents and 
 
 
 ## To Do
 
+* Decide on the input format and add a parser for it.
+* Genericise the HTML5 jinja2 renderer into a jinja2 rendering base class plus
+  a jinja2-based html5 renderer.
 * Add Markdown support, and then generate these docs with maxdoc itself
+* Separate the config-context into two distinct objects.
+* Split context further into loading context, transformation context, and
+  rendering context?
+* Move the db support into the context
+* Make the pluggable features more formally separate plugins, and auto-load them
+  from paths.
+* Add support for multiple dbs
+* Add support for non-DB datasources (such as an interface to directly load
+  content from wikipedia -- with heading level truncation / tag selection,
+  this could insert summaries of a given subject).
 
 
 ## Author
