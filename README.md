@@ -22,6 +22,11 @@ The intent is to create a single documentation system that:
   everything from producing reports and training materials to books,
   audiobooks, and presentations.
 
+* Has a modern, lightweight, but formal syntax without the adhoc mess that
+  is markdown, ReST, etc., nor the unwieldy IDE-assisted mess that is
+  bookbook etc. Final syntax will probably look something like \em{
+  emphasised text here}.
+
 Most of the above currently works, for at least one proof-of-concept
 source/format/output. The main feature missing is the input parser -
 currently the only "input" is in the form a intermediate AST yaml dump
