@@ -22,18 +22,22 @@ class Renderer(metaclass=abc.ABCMeta):
         pass
 
     def _get_ast_db_node(self, config, db_session, ast_node):
-        if type(ast_node) in (list, dict):
+        if isinstance(ast_node, list):
             return None
 
         try:
-            db_type = getattr(db, ast_node.node_type)
+            db_type = getattr(db, ast_node[ast.NodeField.NODE_TYPE])
         except AttributeError:
             return None
 
         try:
             return db_session.query(db_type).filter_by(id=ast_node.id).one()
         except sqlalchemy.orm.exc.NoResultFound:
-            logger.error("ERROR: No DB record found for {}(id={!r})".format(ast_node.node_type, ast_node.id))
+            logger.error(
+                "ERROR: No DB record found for {}(id={!r})".format(
+                    ast_node[ast.NodeField.NODE_TYPE], ast_node['id']
+                )
+            )
             sys.exit(20)
 
     def render(self, config, db_session, ast_node):
@@ -43,14 +47,8 @@ class Renderer(metaclass=abc.ABCMeta):
         if isinstance(ast_node, list):
             children = ast_node
 
-        elif isinstance(ast_node, dict):
-            children = ast_node['_children']
-
-        elif hasattr(ast_node, '_children'):
-            children = ast_node._children
-
         else:
-            children = []
+            children = ast_node[ast.NodeField.CHILDREN]
 
         for ast_child_node in children:
             self.render(config, db_session, ast_child_node)

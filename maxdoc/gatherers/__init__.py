@@ -17,7 +17,10 @@ def _generate_gatherers():
     items = [getattr(db, i) for i in dir(db)]
 
     for item in items:
-        if inspect.isclass(item) and issubclass(item, db.Base) and item.__name__ != 'Base':
+        if (
+            inspect.isclass(item)
+            and issubclass(item, db.Base) and item.__name__ != 'Base'
+        ):
             fpath = os.path.join('data', as_config_fname(item)) + '.yaml'
             gatherer = GenericConfigFileDataGatherer(item, fpath)
             yield gatherer

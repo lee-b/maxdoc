@@ -1,9 +1,13 @@
+import logging
 import os
 import sys
 import yaml
 
 from ..db import *
 from ..data import DataGatherer
+
+
+logger = logging.getLogger(__name__)
 
 
 class GenericConfigFileDataGatherer(DataGatherer):
@@ -19,7 +23,12 @@ class GenericConfigFileDataGatherer(DataGatherer):
 
     def gather_data(self, config, db_session):
         if os.path.exists(self._fpath):
-            print("Gathering {} data from {}...".format(self._data_type.__name__, self._fpath), end="")
+            logger.info(
+                "Gathering {} data from {}...".format(
+                    self._data_type.__name__, self._fpath
+                ),
+                end=""
+            )
             sys.stdout.flush()
 
             with open(self._fpath) as fp:
@@ -33,4 +42,8 @@ class GenericConfigFileDataGatherer(DataGatherer):
             print("done.")
 
         else:
-            print("No {} found; skipping loading of {}s.".format(self._fpath, self._data_type.__name__))
+            print(
+                "No {} found; skipping loading of {}s.".format(
+                    self._fpath, self._data_type.__name__
+                )
+            )

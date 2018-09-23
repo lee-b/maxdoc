@@ -21,8 +21,12 @@ class Config:
 def get_config(argv):
     argparser = argparse.ArgumentParser()
     argparser.add_argument('--renderer', default='html')
-    argparser.add_argument('--dump-transformed-ast', default=False, action="store_true")
-    argparser.add_argument('--dump-ast-walk', default=False, action="store_true")
+    argparser.add_argument(
+        '--dump-transformed-ast', default=False, action="store_true"
+    )
+    argparser.add_argument(
+        '--dump-ast-walk', default=False, action="store_true"
+    )
     argparser.add_argument('input_doc')
     argparser.add_argument('output_doc')
 

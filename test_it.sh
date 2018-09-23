@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd examples
-USER=Larry PYTHONPATH=.. ../env/bin/python ../bin/maxdoc --renderer=html_jinja2 "$@" index.mdoc out.html && cat out.html
+USER=Larry PYTHONPATH=.. ../env/bin/python ../bin/maxdoc --renderer=html "$@" index.mdoc out.html && cat out.html
 
 #if which xdg-open > /dev/null; then
 #    if [ "$DISPLAY" != "" ]; then

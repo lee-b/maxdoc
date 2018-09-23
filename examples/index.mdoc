@@ -1,49 +1,51 @@
 {
-    node_type: Document,
+    NODE_TYPE: Document,
     title: "A Warm Greetingmonition",
 
-    _children: [
+    CHILDREN: [
         {
-            node_type: Para,
-            _children: [
+            NODE_TYPE: Para,
+            CHILDREN: [
                 {
-                    node_type: Text,
+                    NODE_TYPE: Text,
                     body: "Hello "
                 },
                 {
-                    node_type: Text,
+                    NODE_TYPE: AST_TRANSFORMATION,
+                    TRANSFORMATION: env_var,
                     body: USER,
-                    _transformation: env_var,
                 },
                 {
-                    node_type: Text,
+                    NODE_TYPE: Text,
                     body: ","
                 },
             ],
         },
         {
-            node_type: Head,
+            NODE_TYPE: Head,
             title: "A top-level heading",
 
-            _children: [
+            CHILDREN: [
                 {
-                    _transformation: include_ast,
+                    NODE_TYPE: AST_TRANSFORMATION,
+                    TRANSFORMATION: include_ast,
                     path: subtopic.mdoc,
                 },
                 {
-                    _transformation: prune_heading_levels,
+                    NODE_TYPE: AST_TRANSFORMATION,
+                    TRANSFORMATION: prune_heading_levels,
                     max_level: 2,
-                    _children: [
+                    CHILDREN: [
                         {
-                            node_type: Head,
+                            NODE_TYPE: Head,
                             title: "Subheading",
-                            _children: [
+                            CHILDREN: [
                                 {
-                                    node_type: Head,
+                                    NODE_TYPE: Head,
                                     title: "Subheading",
-                                    _children: [
+                                    CHILDREN: [
                                         {
-                                            node_type: Head,
+                                            NODE_TYPE: Head,
                                             title: "Bottom Subheading",
                                         },
                                     ],
@@ -53,30 +55,30 @@
                     ],
                 },
                 {
-                    node_type: Para,
-                    _children: [
+                    NODE_TYPE: Para,
+                    CHILDREN: [
                         {
-                            node_type: Text,
+                            NODE_TYPE: Text,
                             body: "You ",
                         },
                         {
-                            node_type: Sup,
-                            _children: [
+                            NODE_TYPE: Sup,
+                            CHILDREN: [
                                 {
-                                    node_type: Sup,
-                                    _children: [
+                                    NODE_TYPE: Sup,
+                                    CHILDREN: [
                                         {
-                                            node_type: Text,
+                                            NODE_TYPE: Text,
                                             body: " really ",
                                         },
                                         {
-                                            node_type: Sup,
-                                            _children: [
+                                            NODE_TYPE: Sup,
+                                            CHILDREN: [
                                                 {
-                                                    node_type: Strong,
-                                                    _children: [
+                                                    NODE_TYPE: Strong,
+                                                    CHILDREN: [
                                                         {
-                                                            node_type: Text,
+                                                            NODE_TYPE: Text,
                                                             body: "should",
                                                         },
                                                     ],
@@ -88,23 +90,23 @@
                             ],
                         },
                        {
-                            node_type: Text,
+                            NODE_TYPE: Text,
                             body: " read ",
                         },
                         {
-                            node_type: Book,
+                            NODE_TYPE: Book,
                             id: gplv2,
                         },
                         {
-                            node_type: Text,
+                            NODE_TYPE: Text,
                             body: " by ",
                         },
                         {
-                            node_type: Author,
+                            NODE_TYPE: Author,
                             id: rms@gnu.org,
                         },
                         {
-                            node_type: Text,
+                            NODE_TYPE: Text,
                             body: "."
                         },
                     ],
@@ -112,29 +114,30 @@
            ],
         },
         {
-            node_type: Head,
+            NODE_TYPE: Head,
             title: "A second top-level heading.",
         },
         {
-            node_type: Para,
-            _children: [
+            NODE_TYPE: Para,
+            CHILDREN: [
                 {
-                    node_type: Text,
+                    NODE_TYPE: Text,
                     body: "Bye now,",
                 },
             ],
          },
          {
-            node_type: Para,
-            _children: [
+            NODE_TYPE: Para,
+            CHILDREN: [
                 {
-                    node_type: Author,
+                    NODE_TYPE: Author,
                     id: leebraid@gmail.com,
                 },
             ],
         },
         {
-            _transformation: include_ast,
+            NODE_TYPE: AST_TRANSFORMATION,
+            TRANSFORMATION: include_ast,
             path: footer.mdoc,
         }
     ]

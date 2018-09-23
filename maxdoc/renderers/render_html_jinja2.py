@@ -18,21 +18,29 @@ class Jinja2HTMLRenderer(Renderer):
 
     def _load_template(self, basename, suffix):
         try:
-            return self._env.get_template("{}_{}.html.jinja2".format(basename, suffix))
+            return self._env.get_template(#
+                "{}_{}.html.jinja2".format(basename, suffix)
+            )
         except jinja2.exceptions.TemplateNotFound:
             return None
         except jinja2.exceptions.TemplateSyntaxError as e:
-            raise RenderError("Template {}_{}: {}", basename, suffix, str(e)) from e
+            raise RenderError(
+                "Template {}_{}: {}", basename, suffix, str(e)
+            ) from e
 
     def _render_template(self, config, db_session, ast_node, suffix):
-        if hasattr(ast_node, 'node_type'):
+        if (isinstance(ast_node, ast.Node)
+            and ast_node[ast.NodeField.NODE_TYPE].upper() != ast_node[ast.NodeField.NODE_TYPE]
+        ):
             db_node = self._get_ast_db_node(config, db_session, ast_node)
 
-            template = self._load_template(ast_node.node_type, suffix)
+            template = self._load_template(ast_node[ast.NodeField.NODE_TYPE], suffix)
             if template is None:
                 return False
 
-            output = template.render(config=config, ast_node=ast_node, db_node=db_node)
+            output = template.render(
+                config=config, ast_node=ast_node, db_node=db_node
+            )
 
             config.out_fp.write(output)
 
