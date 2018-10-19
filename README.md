@@ -51,8 +51,8 @@ files.
 * Pluggable renderers, including a currently implemented template-based
   (jinja2) HTML5 renderer.
 
-These features make MaxDoc an incredibly powerful tool for quickly manipulating
-documents and 
+These features make MaxDoc an incredibly powerful tool for storing, manipulating, and
+presenting documents.
 
 
 ## To Do
